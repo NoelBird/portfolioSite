@@ -17,9 +17,9 @@ app.get('/', (req, res) => {
     res.render("index");
 });
 
-// app.get('/header', (req, res) => {
-//     res.render("header")
-// });
+app.get('/DetailedAboutMe', (req, res) => {
+     res.render("DetailedAboutMe")
+ });
 
 app.get('/base', (req, res) => {
     res.render("base")
