@@ -21,6 +21,10 @@ app.get('/DetailedAboutMe', (req, res) => {
      res.render("DetailedAboutMe")
  });
 
+app.get('/portfolio/handwriting', (req, res) => {
+    res.render("portfolio/handwriting")
+})
+
 app.get('/base', (req, res) => {
     res.render("base")
 });
