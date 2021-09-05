@@ -33,12 +33,16 @@ app.get('/ko/', (req, res) => {
     res.render("ko/index");
 });
 
-app.get('/DetailedAboutMe', (req, res) => {
-     res.render("DetailedAboutMe")
+app.get('/en/DetailedAboutMe', (req, res) => {
+     res.render("en/DetailedAboutMe")
  });
 
+app.get('/ko/DetailedAboutMe', (req, res) => {
+    res.render("ko/DetailedAboutMe")
+});
+
 app.get('/portfolio/handwriting', (req, res) => {
-    res.render("portfolio/handwriting")
+    res.render("en/portfolio/handwriting")
 })
 
 app.get('/base', (req, res) => {

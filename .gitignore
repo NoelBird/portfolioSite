@@ -1,4 +1,8 @@
+# nodejs
 node_modules/
 keys/
 yarn.lock
 package.json
+
+# python
+venv/

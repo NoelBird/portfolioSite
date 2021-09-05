@@ -1,25 +1,23 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from urllib import parse
-
-from keras.layers import Dense, Conv2D, MaxPool2D
-from keras.models import Sequential, model_from_json
-from keras.callbacks import ModelCheckpoint
-import numpy as np
-
+import sys
 import os
+
+
+import tensorflow as tf
+
+from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D
+from tensorflow.keras.layers import Dropout, Flatten
+from tensorflow.keras.models import Sequential, model_from_json
+from tensorflow.keras.callbacks import ModelCheckpoint
+import numpy as np
 
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-import sys
-import tensorflow as tf
-import keras
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers.convolutional import Conv2D, MaxPooling2D
-import numpy as np
+
 
 baseDir = os.path.dirname(os.path.abspath(__file__))
 jsonPath = os.path.join(baseDir, 'model.json')
@@ -65,7 +63,7 @@ if not model:
     img_rows = 28
     img_cols = 28
 
-    (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
     input_shape = (img_rows, img_cols, 1)
     x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
@@ -90,7 +88,7 @@ if not model:
                     activation='relu',
                     input_shape=input_shape))
     model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(MaxPool2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
@@ -106,8 +104,6 @@ if not model:
                     validation_data=(x_test, y_test))
     saveModel(model)
 
-graph = tf.get_default_graph()
-
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -116,23 +112,21 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @cross_origin()
 def hello_world():
     global model
-    global graph
-    with graph.as_default():
-        px = request.args.get('px')
-        if not px:
-            return jsonify({'status':False})
-        l = parse.unquote(px).split(' ')
-        l = list(map(lambda x: int(x, 16)/15, l))
-        
-        img_rows = 28
-        img_cols = 28
-        l = np.array(l)
-        d = l.reshape(1, img_rows, img_cols, 1)
+    px = request.args.get('px')
+    if not px:
+        return jsonify({'status':False})
+    l = parse.unquote(px).split(' ')
+    l = list(map(lambda x: int(x, 16)/15, l))
+    
+    img_rows = 28
+    img_cols = 28
+    l = np.array(l)
+    d = l.reshape(1, img_rows, img_cols, 1)
 
-        lab = model.predict_classes(d)
-        print(lab)
-        # lab = model._make_predict_function(d)
-        return jsonify({'status':True, 'label':int(lab[0])})
+    lab = model.predict_classes(d)
+    print(lab)
+    # lab = model._make_predict_function(d)
+    return jsonify({'status':True, 'label':int(lab[0])})
 
 if __name__ == '__main__':
     app.run(port=3002, host='0.0.0.0')
