@@ -42,7 +42,7 @@ app.get('/ko/DetailedAboutMe', (req, res) => {
 });
 
 app.get('/portfolio/handwriting', (req, res) => {
-    res.render("en/portfolio/handwriting")
+    res.render("portfolio/handwriting")
 })
 
 app.get('/base', (req, res) => {
